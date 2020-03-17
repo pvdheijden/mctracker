@@ -2,9 +2,9 @@ package net.zifzaf.player_tracker;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.zeromq.SocketType;
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
+//import org.zeromq.SocketType;
+//import org.zeromq.ZContext;
+//import org.zeromq.ZMQ;
 import redis.clients.jedis.JedisPool;
 
 public class PlayerTracker extends JavaPlugin {
@@ -21,8 +21,8 @@ public class PlayerTracker extends JavaPlugin {
     final static String LOCATION_Z_KEY = "z";
 
 
-    private final ZContext zContext = new ZContext();
-    private ZMQ.Socket publisher;
+//    private final ZContext zContext = new ZContext();
+//    private ZMQ.Socket publisher;
 
     public PlayerTracker() {
         super();
@@ -32,8 +32,8 @@ public class PlayerTracker extends JavaPlugin {
     public void onEnable() {
         getLogger().info("PlayerTracker enabled");
 
-        publisher = zContext.createSocket(SocketType.PUB);
-        publisher.bind("tcp://*:5556");
+//        publisher = zContext.createSocket(SocketType.PUB);
+//        publisher.bind("tcp://*:5556");
 
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new PlayerListener(this), this);
@@ -43,11 +43,11 @@ public class PlayerTracker extends JavaPlugin {
     public void onDisable() {
         getLogger().info("PlayerTracker disabled");
 
-        publisher.unbind("tcp://*:5556");
-        publisher.close();
+//        publisher.unbind("tcp://*:5556");
+//        publisher.close();
     }
 
-    boolean publisherSend(String data) {
-        return publisher.send(data, 0);
-    }
+//    boolean publisherSend(String data) {
+//        return publisher.send(data, 0);
+//    }
 }

@@ -1,0 +1,4 @@
+name: PlayerTracker
+version: 1.0.0
+author: p1m_nl
+main: net.zifzaf.player_tracker.PlayerTracker
