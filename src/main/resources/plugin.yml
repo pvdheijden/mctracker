@@ -1,4 +1,4 @@
-name: PlayerTracker
+name: mctracker
 version: 1.0.0
 author: p1m_nl
-main: net.zifzaf.player_tracker.PlayerTracker
+main: net.zifzaf.minecraft.PlayerTracker
