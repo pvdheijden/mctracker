@@ -1,5 +1,9 @@
 package net.zifzaf.minecraft;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,54 +11,63 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-
 public class PlayerListener implements Listener {
     private final PlayerTracker plugin;
-
     PlayerListener(PlayerTracker plugin) {
         this.plugin = plugin;
     }
 
-    private final HashMap<Integer, Long> playerUpdateTimes = new HashMap<Integer, Long>(64);
+    private final HashMap<Integer, Long> playerUpdateTimes = new HashMap<>(64);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
+
+        String key = event.getPlayer().getUniqueId().toString();
+
+        Map<String, Object> statusData = new HashMap<>();
+        statusData.put("timestamp", System.currentTimeMillis());
+        statusData.put("online", true);
+    
+        plugin.database.collection("playerStatus").document(key)
+            .collection("data").document("status").set(statusData);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         plugin.getLogger().info(event.getPlayer().getName() + " left the server! :'(");
+
+        String key = event.getPlayer().getUniqueId().toString();
+
+        Map<String, Object> statusData = new HashMap<>();
+        statusData.put("timestamp", System.currentTimeMillis());
+        statusData.put("online", true);
+    
+        plugin.database.collection("playerStatus").document(key)
+            .collection("data").document("status").set(statusData);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
+        int id = event.getPlayer().getUniqueId().hashCode();
+        long updateTimestamp = playerUpdateTimes.get(id) == null ? 0 : playerUpdateTimes.get(id);
+        long currentTimestamp = System.currentTimeMillis();
 
-        /*
-        plugin.getLogger().info(String.format("%s from %.2f,%.2f,%.2f to %.2f,%.2f,%.2f",
-                event.getPlayer().getName(),
-                from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ()));
-        */
+        if (updateTimestamp <= currentTimestamp - 1000) {
+            String key = event.getPlayer().getUniqueId().toString();
 
-        int playerIdHash = event.getPlayer().getUniqueId().hashCode();
+            Location from = event.getFrom();
+            Location to = event.getTo();
 
-        String key = String.format(PlayerTracker.PLAYER_KEY, event.getPlayer().getUniqueId().toString());
+            Map<String, Object> locationData = new HashMap<>();
+            locationData.put("timestamp", currentTimestamp);
+            locationData.put("from", Arrays.asList(from.getX(), from.getY(), from.getZ()));
+            locationData.put("to", Arrays.asList(to.getX(), to.getY(), to.getZ()));
 
-        long updateTime = playerUpdateTimes.get(playerIdHash) == null ? 0 : playerUpdateTimes.get(playerIdHash);
-        long currentTime = System.currentTimeMillis();
-
-        if (updateTime <= currentTime - 1000) {
-            HashMap<String, String> location = new HashMap<>(6, 1);
-            location.put(PlayerTracker.LOCATION_TIMESTAMP, String.valueOf(currentTime));
-            location.put(PlayerTracker.LOCATION_X_KEY, String.valueOf(to.getX()));
-            location.put(PlayerTracker.LOCATION_Y_KEY, String.valueOf(to.getY()));
-            location.put(PlayerTracker.LOCATION_Z_KEY, String.valueOf(to.getZ()));
-
-
-            playerUpdateTimes.put(playerIdHash, currentTime);
+            plugin.database.collection("playerStatus").document(key)
+                .collection("data").document("location").set(locationData);
+            
+            playerUpdateTimes.put(id, currentTimestamp);
         }
     }
 }

@@ -1,4 +1,6 @@
 name: mctracker
 version: 1.0.0
 author: p1m_nl
+
 main: net.zifzaf.minecraft.PlayerTracker
+api-version: 1.15

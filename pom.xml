@@ -9,6 +9,7 @@
   <groupId>net.zifzaf.minecraft</groupId>
   <artifactId>mctracker</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>mctracker</name>
   <url>https://mctracker.minecraft.zifzaf.net</url>
@@ -44,7 +45,7 @@
       <artifactId>firebase-admin</artifactId>
       <version>6.12.2</version>
     </dependency>    
-    </dependencies>
+  </dependencies>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -70,6 +71,14 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
