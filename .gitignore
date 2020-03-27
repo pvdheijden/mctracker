@@ -1,3 +1,8 @@
 # Project exclude paths
+.vscode/
+.project
+.settings
+.classpath
+
 /target/
 /minecraft/
