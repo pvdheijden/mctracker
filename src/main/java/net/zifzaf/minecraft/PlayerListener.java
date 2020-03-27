@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
 
         Map<String, Object> statusData = new HashMap<>();
         statusData.put("timestamp", System.currentTimeMillis());
-        statusData.put("online", true);
+        statusData.put("online", false);
     
         plugin.database.collection("playerStatus").document(key)
             .collection("data").document("status").set(statusData);
@@ -53,7 +53,7 @@ public class PlayerListener implements Listener {
         long updateTimestamp = playerUpdateTimes.get(id) == null ? 0 : playerUpdateTimes.get(id);
         long currentTimestamp = System.currentTimeMillis();
 
-        if (updateTimestamp <= currentTimestamp - 1000) {
+        if (updateTimestamp <= currentTimestamp - 10000) {
             String key = event.getPlayer().getUniqueId().toString();
 
             Location from = event.getFrom();
