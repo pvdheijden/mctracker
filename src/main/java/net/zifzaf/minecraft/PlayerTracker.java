@@ -25,7 +25,7 @@ public class PlayerTracker extends JavaPlugin {
 
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("/secrets/firebase-adminsdk.json");
+            serviceAccount = new FileInputStream("/opt/minecraft/secrets/firebase-admin.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
