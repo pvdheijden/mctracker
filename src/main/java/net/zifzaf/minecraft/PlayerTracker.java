@@ -2,6 +2,7 @@ package net.zifzaf.minecraft;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
@@ -27,20 +28,20 @@ public class PlayerTracker extends JavaPlugin {
         try {
             serviceAccount = new FileInputStream("/opt/minecraft/secrets/firebase-admin.json");
 
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setDatabaseUrl("https://minecraft-zifzaf-net.firebaseio.com").build();
 
             FirebaseApp.initializeApp(options);
             
             database = FirestoreClient.getFirestore();
+
+            PluginManager pm = this.getServer().getPluginManager();
+            pm.registerEvents(new PlayerListener(this), this);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "PlayerTracker error: " + e.getMessage());
         }
 
-        PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new PlayerListener(this), this);
     }
 
     @Override
