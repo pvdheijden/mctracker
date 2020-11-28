@@ -1,5 +1,5 @@
 name: mctracker
-version: 1.0.0
+version: 1.0-SNAPSHOT
 author: p1m_nl
 
 main: net.zifzaf.minecraft.PlayerTracker
